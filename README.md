@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# Jasir Ali Khan — Portfolio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An extreme, high-polish personal portfolio for **Jasir Ali Khan**, Junior Full Stack MERN Developer at SMUFTECH.
 
-## Available Scripts
+## ✨ Highlights
 
-In the project directory, you can run:
+- **Three.js deep-space background** — animated particle starfield plus rotating wireframe rings with mouse parallax. Performance-tuned: capped `devicePixelRatio`, render loop pauses when the tab is hidden, and the canvas unmounts cleanly.
+- **3D hero visual (`Hero3DCube`)** — an icosahedron core wrapped in a wireframe cage with orbiting rings/nodes that reacts to pointer movement.
+- **AI welcome bot avatar (`Welcome3DAvatar`)** — a 3D robot with visor, eyes, antenna and a waving hand. Follows the cursor, shows a live speech bubble with Hire / Projects CTAs, and can be minimized and reopened.
+- **Clickable project cards → styled detail modal** — every card opens a rich modal with the project summary, strategy, feature list, tech stack tags, plus GitHub / live-demo / "discuss this project" actions.
+- **Full responsive dark UI** — custom-built stylesheet (`src/index.css`) with ambient glow orbs, gradient animated headings, filter bar, experience timeline, education grid, skills, value props, contact/quote modal and footer.
 
-### `npm start`
+## 🧱 Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Layer | Technology |
+| --- | --- |
+| Framework | React 18 (Create React App) |
+| 3D / Animation | Three.js, requestAnimationFrame, CSS keyframes |
+| Styling | Hand-written CSS (dark theme, CSS custom properties) |
+| Icons | `lucide-react` + custom SVG (`GithubIcon`) |
+| Language | JavaScript (JSX) |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📁 Project Structure
 
-### `npm test`
+```
+src/
+├── App.jsx                       # Page composition, filters, modal wiring
+├── data.js                       # Personal info, stats, skills, projects, experience
+├── projectsData.js               # Extended project dataset
+├── index.css                     # Complete stylesheet (theme + all sections)
+├── components/
+│   ├── ThreeBackground.jsx       # Particle starfield + wireframe rings
+│   ├── Hero3DCube.jsx            # Hero 3D core visual
+│   ├── Welcome3DAvatar.jsx       # Interactive 3D bot assistant
+│   ├── ProjectModal.jsx          # Project detail modal
+│   ├── Navbar.jsx                # Sticky navigation
+│   ├── GithubIcon.jsx            # GitHub SVG icon
+│   └── UIComponents.jsx          # Button, Card, Tag, Modal primitives
+public/
+└── index.html                    # Fonts, meta tags, theme color
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Getting Started
 
-### `npm run build`
+```bash
+npm install
+npm start      # runs on http://localhost:3000
+npm run build  # production build into ./build
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🌐 Links
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- GitHub: [github.com/Jasir-ali90](https://github.com/Jasir-ali90)
