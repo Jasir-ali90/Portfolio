@@ -14,8 +14,8 @@ An extreme, high-polish personal portfolio for **Jasir Ali Khan**, Junior Full S
 
 | Layer | Technology |
 | --- | --- |
-| Framework | React 18 (Create React App) |
-| 3D / Animation | Three.js, requestAnimationFrame, CSS keyframes |
+| Framework | React 19 (Create React App) |
+| 3D / Animation | Three.js 0.186, requestAnimationFrame, CSS keyframes |
 | Styling | Hand-written CSS (dark theme, CSS custom properties) |
 | Icons | `lucide-react` + custom SVG (`GithubIcon`) |
 | Language | JavaScript (JSX) |
