@@ -20,12 +20,20 @@ export default function ThreeBackground() {
     );
     camera.position.z = 120;
 
-    // Renderer with performance optimizations
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: false, // Performance boost - prevents lag
-      powerPreference: 'high-performance'
-    });
+    // Renderer with performance optimizations.
+    // WebGL is progressive enhancement only: if the browser blocks WebGL or
+    // context creation fails we bail out silently instead of throwing, which
+    // would unmount the whole React tree and leave a blank page.
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: false, // Performance boost - prevents lag
+        powerPreference: 'high-performance'
+      });
+    } catch (err) {
+      return; // No WebGL available -> keep the CSS-only background
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capped pixel ratio prevents GPU overload
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
@@ -126,13 +134,13 @@ export default function ThreeBackground() {
 
     // Animation Loop
     let animationFrameId;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       if (!isTabActive) return; // Save CPU & battery
 
-      const elapsedTime = clock.getElapsedTime();
+      const elapsedTime = (performance.now() - startTime) / 1000;
 
       // Smooth camera interpolation
       targetX += (mouseX - targetX) * 0.04;
@@ -149,7 +157,11 @@ export default function ThreeBackground() {
       ring1.rotation.z = elapsedTime * 0.08;
       ring2.rotation.z = -elapsedTime * 0.06;
 
-      renderer.render(scene, camera);
+      try {
+        renderer.render(scene, camera);
+      } catch (err) {
+        cancelAnimationFrame(animationFrameId); // Context lost -> stop the loop
+      }
     };
 
     animate();

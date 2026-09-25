@@ -5,6 +5,13 @@ export default function Welcome3DAvatar({ onChatOpen }) {
   const mountRef = useRef(null);
   const [minimized, setMinimized] = useState(false);
 
+  // Auto-collapse the welcome bubble after a few seconds so the floating
+  // assistant never covers hero text or other page content.
+  useEffect(() => {
+    const timer = setTimeout(() => setMinimized(true), 9000);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
@@ -13,26 +20,36 @@ export default function Welcome3DAvatar({ onChatOpen }) {
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
     camera.position.set(0, 0.35, 3.8);
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: 'high-performance'
-    });
-    renderer.setSize(150, 150);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (err) {
+      return; // WebGL unavailable -> skip the 3D bot, never crash the page
+    }
+    renderer.setSize(110, 110);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     mount.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+    scene.add(new THREE.AmbientLight(0xffffff, 2.1));
     const p1 = new THREE.PointLight(0x22d3ee, 3, 20);
     p1.position.set(3, 3, 4);
     scene.add(p1);
+
+    // Purple rim light keeps the bot readable against the dark page
+    const p2 = new THREE.PointLight(0xa855f7, 2.4, 20);
+    p2.position.set(-3, -2, 3);
+    scene.add(p2);
 
     const bot = new THREE.Group();
 
     // Head & Visor
     const head = new THREE.Mesh(
       new THREE.SphereGeometry(0.72, 16, 16),
-      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.25, metalness: 0.85 })
+      new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.45, metalness: 0.15 })
     );
     bot.add(head);
 
@@ -60,7 +77,7 @@ export default function Welcome3DAvatar({ onChatOpen }) {
     // Antenna
     const stem = new THREE.Mesh(
       new THREE.CylinderGeometry(0.03, 0.03, 0.35, 8),
-      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 })
+      new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.1 })
     );
     stem.position.set(0, 0.85, 0);
     bot.add(stem);
@@ -77,7 +94,7 @@ export default function Welcome3DAvatar({ onChatOpen }) {
     handPivot.position.set(0.85, -0.15, 0);
     const arm = new THREE.Mesh(
       new THREE.CylinderGeometry(0.06, 0.06, 0.45, 8),
-      new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8 })
+      new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.1 })
     );
     arm.position.y = 0.22;
     handPivot.add(arm);
@@ -109,12 +126,12 @@ export default function Welcome3DAvatar({ onChatOpen }) {
     window.addEventListener('mousemove', onMove, { passive: true });
 
     let animId;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (document.hidden) return;
-      const t = clock.getElapsedTime();
+      const t = (performance.now() - startTime) / 1000;
 
       bot.position.y = Math.sin(t * 2.2) * 0.1;
       bot.rotation.y += (targetRotY - bot.rotation.y) * 0.08;
@@ -126,7 +143,11 @@ export default function Welcome3DAvatar({ onChatOpen }) {
       const pulse = 0.6 + Math.sin(t * 4) * 0.4;
       ball.scale.set(1 + pulse * 0.2, 1 + pulse * 0.2, 1 + pulse * 0.2);
 
-      renderer.render(scene, camera);
+      try {
+        renderer.render(scene, camera);
+      } catch (err) {
+        cancelAnimationFrame(animId); // Context lost -> stop the loop
+      }
     };
 
     animate();

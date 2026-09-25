@@ -12,11 +12,16 @@ export default function Hero3DCube() {
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.z = 5.2;
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: 'high-performance'
-    });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (err) {
+      return; // WebGL unavailable -> skip the 3D visual, never crash the page
+    }
     renderer.setSize(260, 260);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     mount.appendChild(renderer.domElement);
@@ -35,9 +40,9 @@ export default function Hero3DCube() {
     // 1. Central Tech Core (Icosahedron)
     const coreGeom = new THREE.IcosahedronGeometry(1.05, 1);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x0f172a,
-      roughness: 0.2,
-      metalness: 0.9,
+      color: 0x334155,
+      roughness: 0.4,
+      metalness: 0.25,
       wireframe: false
     });
     const core = new THREE.Mesh(coreGeom, coreMat);
@@ -89,12 +94,12 @@ export default function Hero3DCube() {
     window.addEventListener('mousemove', onMove, { passive: true });
 
     let animId;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (document.hidden) return;
-      const t = clock.getElapsedTime();
+      const t = (performance.now() - startTime) / 1000;
 
       // Smooth rotation with mouse influence
       group.rotation.y = t * 0.4 + mouseX * 0.4;
@@ -110,7 +115,11 @@ export default function Hero3DCube() {
       node1.position.set(Math.cos(t * 1.5) * 1.9, Math.sin(t * 1.5) * 1.9, 0);
       node2.position.set(0, Math.cos(t * 1.2) * 2.2, Math.sin(t * 1.2) * 2.2);
 
-      renderer.render(scene, camera);
+      try {
+        renderer.render(scene, camera);
+      } catch (err) {
+        cancelAnimationFrame(animId); // Context lost -> stop the loop
+      }
     };
 
     animate();
