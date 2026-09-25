@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import ProjectModal from './components/ProjectModal';
-import ThreeBackground from './components/ThreeBackground';
+import AuroraBackground from './components/AuroraBackground';
+import MotionLayer from './components/MotionLayer';
 import Welcome3DAvatar from './components/Welcome3DAvatar';
 import Hero3DCube from './components/Hero3DCube';
 
@@ -38,10 +39,16 @@ export default function App() {
     return true;
   });
 
+  // Technology ribbon shown under the skills grid.
+  const marqueeItems = [...skills.frontend, ...skills.backend, ...skills.databases].map(
+    (skill) => skill.name
+  );
+
   return (
     <div className="portfolio-app-root">
-      {/* 3D Deep Space Interactive Particles & Grid Background */}
-      <ThreeBackground />
+      {/* Animated gradient backdrop (pure CSS) + scroll & pointer driven motion */}
+      <AuroraBackground />
+      <MotionLayer />
 
       {/* Background Ambient Orbs */}
       <div className="ambient-glow-sphere ambient-sphere-1" />
@@ -153,6 +160,15 @@ export default function App() {
                 ))}
               </div>
             </Card>
+          </div>
+        </div>
+
+        {/* Infinite technology marquee (pure CSS, edits nothing else) */}
+        <div className="tech-marquee" aria-hidden="true">
+          <div className="tech-marquee-track">
+            {[...marqueeItems, ...marqueeItems].map((item, idx) => (
+              <span className="tech-marquee-item" key={`${item}-${idx}`}>{item}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -411,9 +427,6 @@ export default function App() {
               </Button>
               <a href={personalInfo.github} target="_blank" rel="noreferrer">
                 <Button variant="secondary" icon={GithubIcon}>Visit GitHub</Button>
-              </a>
-              <a href={personalInfo.portfolioUrl} target="_blank" rel="noreferrer">
-                <Button variant="secondary" icon={Globe}>Live Portfolio</Button>
               </a>
             </div>
           </div>

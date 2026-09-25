@@ -10,7 +10,6 @@ export const personalInfo = {
   phone: "0314-2054035",
   email: "jasirali661@gmail.com",
   github: "https://github.com/Jasir-ali90",
-  portfolioUrl: "https://jasir-portfolio.netlify.app",
   summary: "Junior Full Stack MERN Developer at SMUFTECH with 1+ year industry experience and successful freelance production deliveries. Proficient in engineering scalable React/Next.js frontends, resilient Node/Express backends, MongoDB schemas, JWT authentication, and AI integrations."
 };
 

@@ -4,7 +4,8 @@ An extreme, high-polish personal portfolio for **Jasir Ali Khan**, Junior Full S
 
 ## ✨ Highlights
 
-- **Three.js deep-space background** — animated particle starfield plus rotating wireframe rings with mouse parallax. Performance-tuned: capped `devicePixelRatio`, render loop pauses when the tab is hidden, and the canvas unmounts cleanly.
+- **CSS-only animated backdrop (`AuroraBackground`)** — layered aurora gradient with drifting blobs, subtle grid and vignette, rendered entirely on the compositor (no WebGL canvas) so the page stays fast and never flashes blank.
+- **Dribbble-style motion layer (`MotionLayer`)** — top scroll-progress bar, pointer glow, staggered section reveals via `IntersectionObserver`, animated stat counters and a looping tech-stack marquee. All progressive enhancement: disabled under `prefers-reduced-motion` and on coarse pointers.
 - **3D hero visual (`Hero3DCube`)** — an icosahedron core wrapped in a wireframe cage with orbiting rings/nodes that reacts to pointer movement.
 - **AI welcome bot avatar (`Welcome3DAvatar`)** — a 3D robot with visor, eyes, antenna and a waving hand. Follows the cursor, shows a live speech bubble with Hire / Projects CTAs, and can be minimized and reopened.
 - **Clickable project cards → styled detail modal** — every card opens a rich modal with the project summary, strategy, feature list, tech stack tags, plus GitHub / live-demo / "discuss this project" actions.
@@ -15,7 +16,7 @@ An extreme, high-polish personal portfolio for **Jasir Ali Khan**, Junior Full S
 | Layer | Technology |
 | --- | --- |
 | Framework | React 19 (Create React App) |
-| 3D / Animation | Three.js 0.186, requestAnimationFrame, CSS keyframes |
+| 3D / Animation | Three.js 0.186 (hero + bot), CSS keyframes, IntersectionObserver, requestAnimationFrame |
 | Styling | Hand-written CSS (dark theme, CSS custom properties) |
 | Icons | `lucide-react` + custom SVG (`GithubIcon`) |
 | Language | JavaScript (JSX) |
@@ -29,7 +30,8 @@ src/
 ├── projectsData.js               # Extended project dataset
 ├── index.css                     # Complete stylesheet (theme + all sections)
 ├── components/
-│   ├── ThreeBackground.jsx       # Particle starfield + wireframe rings
+│   ├── AuroraBackground.jsx      # Animated gradient backdrop (pure CSS)
+│   ├── MotionLayer.jsx           # Scroll progress, reveal, pointer glow, counters
 │   ├── Hero3DCube.jsx            # Hero 3D core visual
 │   ├── Welcome3DAvatar.jsx       # Interactive 3D bot assistant
 │   ├── ProjectModal.jsx          # Project detail modal

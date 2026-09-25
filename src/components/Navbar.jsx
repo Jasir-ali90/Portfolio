@@ -1,16 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Sparkles, Send } from 'lucide-react';
 
+// Sections tracked by the animated nav underline (ids must match App.jsx).
+const NAV_ITEMS = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'education', label: 'Education' },
+  { id: 'contact', label: 'Contact' },
+];
+
+const SECTION_IDS = NAV_ITEMS.map((item) => item.id);
+
 export default function Navbar({ onOpenContact }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
-    const handleScroll = () => {
+    let frame = 0;
+
+    const measure = () => {
+      frame = 0;
       setScrolled(window.scrollY > 40);
+
+      // Scrollspy: the active section is the last one whose top has passed the
+      // 45% line of the viewport. Reads only, so it costs one layout pass.
+      const band = window.innerHeight * 0.45;
+      let current = SECTION_IDS[0];
+      SECTION_IDS.forEach((id) => {
+        const node = document.getElementById(id);
+        if (node && node.getBoundingClientRect().top <= band) current = id;
+      });
+      setActiveSection(current);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const handleScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    measure();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
@@ -25,13 +63,16 @@ export default function Navbar({ onOpenContact }) {
 
         {/* Desktop Links */}
         <ul className="nav-menu">
-          <li><a href="#home" className="nav-link">Home</a></li>
-          <li><a href="#about" className="nav-link">About</a></li>
-          <li><a href="#skills" className="nav-link">Skills</a></li>
-          <li><a href="#projects" className="nav-link">Projects</a></li>
-          <li><a href="#experience" className="nav-link">Experience</a></li>
-          <li><a href="#education" className="nav-link">Education</a></li>
-          <li><a href="#contact" className="nav-link">Contact</a></li>
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={`nav-link ${activeSection === item.id ? 'is-active' : ''}`}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
         </ul>
 
         <div className="nav-actions">
@@ -58,13 +99,16 @@ export default function Navbar({ onOpenContact }) {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="mobile-dropdown">
-          <a href="#home" className="nav-link" onClick={() => setIsOpen(false)}>Home</a>
-          <a href="#about" className="nav-link" onClick={() => setIsOpen(false)}>About</a>
-          <a href="#skills" className="nav-link" onClick={() => setIsOpen(false)}>Skills</a>
-          <a href="#projects" className="nav-link" onClick={() => setIsOpen(false)}>Projects</a>
-          <a href="#experience" className="nav-link" onClick={() => setIsOpen(false)}>Experience</a>
-          <a href="#education" className="nav-link" onClick={() => setIsOpen(false)}>Education</a>
-          <a href="#contact" className="nav-link" onClick={() => setIsOpen(false)}>Contact</a>
+          {NAV_ITEMS.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className={`nav-link ${activeSection === item.id ? 'is-active' : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              {item.label}
+            </a>
+          ))}
           <button 
             type="button" 
             className="mobile-hire-btn" 

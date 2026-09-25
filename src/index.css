@@ -51,17 +51,7 @@ a {
   text-decoration: none;
 }
 
-/* 3D Canvas Background Behind All Elements */
-.three-canvas-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.85;
-}
+/* Animated gradient backdrop: see .aurora-bg in the MOTION & FX section */
 
 .portfolio-app-root {
   position: relative;
@@ -1800,6 +1790,378 @@ textarea.form-control {
   .avatar-3d-canvas-wrap {
     width: 96px;
     height: 96px;
+  }
+}
+
+/* =========================================================
+   MOTION & FX
+   ---------------------------------------------------------
+   Animated gradient backdrop plus scroll- and pointer-driven
+   motion. Everything animates only transform / opacity, so it
+   stays on the compositor and never triggers layout. Every
+   effect is switched off for prefers-reduced-motion users.
+   ========================================================= */
+
+/* ---------- 1. ANIMATED GRADIENT (AURORA) BACKDROP ---------- */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(14, 165, 233, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(5, 8, 17, 0.72) 0%, rgba(7, 12, 26, 0.5) 45%, rgba(5, 8, 17, 0.85) 100%);
+}
+
+.aurora-blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.45;
+  transform: translate3d(0, 0, 0);
+}
+
+.aurora-blob-1 {
+  top: -14%;
+  left: -10%;
+  width: 46vw;
+  height: 46vw;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.6) 0%, transparent 68%);
+  animation: auroraDriftA 26s ease-in-out infinite alternate;
+}
+
+.aurora-blob-2 {
+  top: 16%;
+  right: -14%;
+  width: 52vw;
+  height: 52vw;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.55) 0%, transparent 68%);
+  animation: auroraDriftB 32s ease-in-out infinite alternate;
+}
+
+.aurora-blob-3 {
+  bottom: -20%;
+  left: 14%;
+  width: 44vw;
+  height: 44vw;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.55) 0%, transparent 68%);
+  animation: auroraDriftC 38s ease-in-out infinite alternate;
+}
+
+.aurora-blob-4 {
+  top: 44%;
+  left: 32%;
+  width: 30vw;
+  height: 30vw;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
+  animation: auroraDriftA 30s ease-in-out infinite alternate-reverse;
+}
+
+.aurora-sheen {
+  position: absolute;
+  inset: -25%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(34, 211, 238, 0.07),
+    rgba(168, 85, 247, 0.09),
+    rgba(56, 189, 248, 0.06),
+    rgba(34, 211, 238, 0.07)
+  );
+  animation: auroraSpin 70s linear infinite;
+}
+
+.aurora-grid {
+  position: absolute;
+  inset: -128px;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(circle at 50% 25%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(circle at 50% 25%, #000 0%, transparent 75%);
+  animation: auroraGridPan 20s linear infinite;
+}
+
+.aurora-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, transparent 38%, rgba(5, 8, 17, 0.72) 100%);
+}
+
+@keyframes auroraDriftA {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(6vw, 5vh, 0) scale(1.12); }
+  100% { transform: translate3d(-4vw, 8vh, 0) scale(0.95); }
+}
+
+@keyframes auroraDriftB {
+  0%   { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%  { transform: translate3d(-8vw, 6vh, 0) scale(0.93); }
+  100% { transform: translate3d(3vw, -7vh, 0) scale(1.14); }
+}
+
+@keyframes auroraDriftC {
+  0%   { transform: translate3d(0, 0, 0) scale(0.94); }
+  50%  { transform: translate3d(5vw, -5vh, 0) scale(1.16); }
+  100% { transform: translate3d(-7vw, -2vh, 0) scale(1); }
+}
+
+@keyframes auroraSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes auroraGridPan {
+  to { transform: translate3d(64px, 64px, 0); }
+}
+
+/* ---------- 2. SCROLL PROGRESS BAR ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 400;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+  background: linear-gradient(90deg, #22d3ee, #38bdf8, #a855f7, #22d3ee);
+  background-size: 200% 100%;
+  animation: shineGradient 9s linear infinite;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.55);
+}
+
+/* ---------- 3. POINTER SPOTLIGHT ---------- */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 620px;
+  height: 620px;
+  margin: -310px 0 0 -310px;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.1) 0%,
+    rgba(168, 85, 247, 0.06) 42%,
+    transparent 68%
+  );
+  transition: opacity 0.45s ease;
+}
+
+.cursor-glow.is-active {
+  opacity: 1;
+}
+
+/* ---------- 4. CARD HOVER: POINTER-TRACKED HIGHLIGHT ---------- */
+.card,
+.value-prop-card,
+.education-card,
+.experience-card {
+  position: relative;
+}
+
+.card::after,
+.value-prop-card::after,
+.education-card::after,
+.experience-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(56, 189, 248, 0.14),
+    transparent 62%
+  );
+}
+
+.card:hover::after,
+.value-prop-card:hover::after,
+.education-card:hover::after,
+.experience-card:hover::after {
+  opacity: 1;
+}
+
+/* ---------- 5. BUTTON SHINE SWEEP ---------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -60%;
+  width: 45%;
+  opacity: 0;
+  pointer-events: none;
+  transform: skewX(-20deg);
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.btn:hover::after {
+  animation: btnShine 0.85s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+@keyframes btnShine {
+  0% { left: -60%; opacity: 0; }
+  18% { opacity: 1; }
+  100% { left: 130%; opacity: 0; }
+}
+
+/* ---------- 6. SCROLL REVEAL ---------- */
+.reveal-pending {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------- 7. HERO LOAD-IN ---------- */
+@keyframes heroRiseIn {
+  from { opacity: 0; transform: translate3d(0, 26px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.hero-section > .badge,
+.hero-section > .hero-title,
+.hero-section > .hero-description,
+.hero-section > .button-group,
+.hero-section > .hero-3d-visual-wrap,
+.hero-section > .hero-stats-bar {
+  animation: heroRiseIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-section > .hero-title { animation-delay: 0.08s; }
+.hero-section > .hero-description { animation-delay: 0.16s; }
+.hero-section > .button-group { animation-delay: 0.24s; }
+.hero-section > .hero-3d-visual-wrap { animation-delay: 0.34s; }
+.hero-section > .hero-stats-bar { animation-delay: 0.44s; }
+
+/* ---------- 8. NAV LINK UNDERLINE ---------- */
+.nav-link {
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after,
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+
+.nav-link.is-active {
+  color: var(--accent-cyan);
+}
+
+/* ---------- 9. TECHNOLOGY MARQUEE ---------- */
+.tech-marquee {
+  position: relative;
+  margin-top: 3.25rem;
+  padding: 0.9rem 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 55s linear infinite;
+}
+
+.tech-marquee:hover .tech-marquee-track {
+  animation-play-state: paused;
+}
+
+.tech-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-right: 3rem;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color 0.25s ease;
+}
+
+.tech-marquee-item::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  opacity: 0.55;
+}
+
+.tech-marquee:hover .tech-marquee-item {
+  color: #cbd5e1;
+}
+
+@keyframes marqueeScroll {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ---------- 10. ACCESSIBILITY: REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob,
+  .aurora-sheen,
+  .aurora-grid,
+  .scroll-progress,
+  .btn:hover::after,
+  .tech-marquee-track,
+  .animated-gradient-text,
+  .spin-slow,
+  .hero-section > .badge,
+  .hero-section > .hero-title,
+  .hero-section > .hero-description,
+  .hero-section > .button-group,
+  .hero-section > .hero-3d-visual-wrap,
+  .hero-section > .hero-stats-bar {
+    animation: none !important;
+  }
+
+  .reveal-pending {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .cursor-glow {
+    display: none;
   }
 }
 
