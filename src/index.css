@@ -1704,3 +1704,89 @@ a {
 }
 
 }
+
+/* ==========================================
+   SHARED FORM PRIMITIVES & MODAL BODY
+   ========================================== */
+
+.modal-body {
+  padding: 1.5rem 1.75rem 2rem 1.75rem;
+}
+
+.feature-text {
+  flex: 1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.15rem;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.85rem 1.15rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border-color);
+  background-color: rgba(8, 13, 25, 0.85);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 0.925rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-control::placeholder {
+  color: #64748b;
+}
+
+.form-control:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+}
+
+.form-control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+textarea.form-control {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .hero-title-extreme {
+    font-size: 1.95rem;
+  }
+  .contact-box {
+    padding: 2.25rem 1.25rem;
+  }
+  .quote-modal-wrapper {
+    padding: 1.5rem 1.25rem;
+  }
+  .experience-card,
+  .education-card,
+  .value-prop-card {
+    padding: 1.35rem;
+  }
+  .avatar-3d-canvas-wrap {
+    width: 120px;
+    height: 120px;
+  }
+}
+
